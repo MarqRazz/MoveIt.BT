@@ -1,0 +1,130 @@
+/**:
+  ros__parameters:
+    default_planning_pipeline: ompl
+    planning_pipelines:
+      - ompl
+      - pilz_industrial_motion_planner
+    ompl:
+      planning_plugin: ompl_interface/OMPLPlanner
+      start_state_max_bounds_error: 0.1
+      jiggle_fraction: 0.05
+      request_adapters: >-
+          default_planner_request_adapters/AddTimeOptimalParameterization
+          default_planner_request_adapters/ResolveConstraintFrames
+          default_planner_request_adapters/FixWorkspaceBounds
+          default_planner_request_adapters/FixStartStateBounds
+          default_planner_request_adapters/FixStartStateCollision
+          default_planner_request_adapters/FixStartStatePathConstraints
+    planner_configs:
+      RRTkConfigDefault:
+        type: geometric::RRT
+        range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
+        goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+      RRTConnectkConfigDefault:
+        type: geometric::RRTConnect
+        range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
+      RRTstarkConfigDefault:
+        type: geometric::RRTstar
+        range: 0.0  # Max motion added to tree. ==> maxDistance_ default: 0.0, if 0.0, set on setup()
+        goal_bias: 0.05  # When close to goal select goal, with this probability? default: 0.05
+        delay_collision_checking: 1  # Stop collision checking as soon as C-free parent found. default 1
+    panda_arm:
+      planner_configs:
+        - RRTkConfigDefault
+        - RRTConnectkConfigDefault
+        - RRTstarkConfigDefault
+    robot_description_kinematics:
+      panda_arm:
+        kinematics_solver: "kdl_kinematics_plugin/KDLKinematicsPlugin"
+        kinematics_solver_search_resolution: 0.005
+        kinematics_solver_timeout: 0.005
+    robot_description_planning:
+      cartesian_limits:
+        max_trans_vel: 1.0
+        max_trans_acc: 2.25
+        max_trans_dec: -5.0
+        max_rot_vel: 1.57
+      default_velocity_scaling_factor: 1.0
+      default_acceleration_scaling_factor: 1.0
+      joint_limits:
+        panda_joint1:
+          has_velocity_limits: true
+          max_velocity: 2.1750
+          has_acceleration_limits: true
+          max_acceleration: 3.75
+        panda_joint2:
+          has_velocity_limits: true
+          max_velocity: 2.1750
+          has_acceleration_limits: true
+          max_acceleration: 1.875
+        panda_joint3:
+          has_velocity_limits: true
+          max_velocity: 2.1750
+          has_acceleration_limits: true
+          max_acceleration: 2.5
+        panda_joint4:
+          has_velocity_limits: true
+          max_velocity: 2.1750
+          has_acceleration_limits: true
+          max_acceleration: 3.125
+        panda_joint5:
+          has_velocity_limits: true
+          max_velocity: 2.6100
+          has_acceleration_limits: true
+          max_acceleration: 3.75
+        panda_joint6:
+          has_velocity_limits: true
+          max_velocity: 2.6100
+          has_acceleration_limits: true
+          max_acceleration: 5.0
+        panda_joint7:
+          has_velocity_limits: true
+          max_velocity: 2.6100
+          has_acceleration_limits: true
+          max_acceleration: 5.0
+        panda_finger_joint1:
+          has_velocity_limits: true
+          max_velocity: 0.1
+          has_acceleration_limits: false
+          max_acceleration: 0.0
+        panda_finger_joint2:
+          has_velocity_limits: true
+          max_velocity: 0.1
+          has_acceleration_limits: false
+          max_acceleration: 0.0
+    pilz_industrial_motion_planner:
+      planning_plugin: pilz_industrial_motion_planner/CommandPlanner
+      request_adapters: ""
+      default_planner_config: PTP
+      capabilities: >-
+          pilz_industrial_motion_planner/MoveGroupSequenceAction
+          pilz_industrial_motion_planner/MoveGroupSequenceService
+
+    trajectory_execution:
+      allowed_execution_duration_scaling: 1.2
+      allowed_goal_duration_margin: 0.5
+      allowed_start_tolerance: 0.01
+      trajectory_duration_monitoring: true
+    moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+    moveit_simple_controller_manager:
+      controller_names:
+        - panda_arm_controller
+        - panda_hand_controller
+      panda_arm_controller:
+        type: FollowJointTrajectory
+        action_ns: follow_joint_trajectory
+        default: true
+        joints:
+          - panda_joint1
+          - panda_joint2
+          - panda_joint3
+          - panda_joint4
+          - panda_joint5
+          - panda_joint6
+          - panda_joint7
+      panda_hand_controller:
+        type: GripperCommand
+        action_ns: gripper_cmd
+        default: true
+        joints:
+          - panda_finger_joint1

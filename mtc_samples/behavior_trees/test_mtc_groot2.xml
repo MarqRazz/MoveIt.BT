@@ -1,0 +1,190 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="TestMtc" _fullpath="">
+        <Sequence name="Test Task :)" _uid="1">
+            <MTCCartesianPlanner name="MTCCartesianPlanner" _uid="2" max_velocity_scaling_factor="1.000000" max_acceleration_scaling_factor="1.000000" step_size="0.010000" planner="{cartesian_planner}"/>
+            <MTCPipelinePlanner name="MTCPipelinePlanner" _uid="3" goal_joint_tolerance="0.000010" planner="{pipeline_planner}"/>
+            <Sequence name="Move Up" _uid="4">
+                <MTCInitializeTask name="MTCInitializeTask" _uid="5" task_name="Move up" task="{mtc_task}"/>
+                <MTCCurrentStateStage name="MTCCurrentStateStage" _uid="6" task="{mtc_task}"/>
+                <MTCMoveRelativeStage name="MTCMoveRelativeStage" _uid="7" stage_name="MoveRelativeStage" direction_frame_id="world" marker_ns="MoveRelativeStage" task="{mtc_task}" planner="{cartesian_planner}" group_name="panda_arm" ik_frame="panda_link8" min_distance="0.1" max_distance="0.2"/>
+                <MTCPlanTask name="MTCPlanTask" _uid="8" task="{mtc_task}" max_solutions="1"/>
+                <MTCExecuteTask name="MTCExecuteTask" _uid="9" task="{mtc_task}"/>
+            </Sequence>
+            <Sequence name="Move up more and back to Ready" _uid="10">
+                <MTCInitializeTask name="MTCInitializeTask" _uid="11" task_name="Move up more and back to ready" task="{mtc_task}"/>
+                <MTCCurrentStateStage name="MTCCurrentStateStage" _uid="12" task="{mtc_task}"/>
+                <MTCMoveRelativeStage name="MTCMoveRelativeStage" _uid="13" stage_name="MoveRelativeStage" direction_frame_id="world" marker_ns="MoveRelativeStage" task="{mtc_task}" planner="{cartesian_planner}" group_name="panda_arm" ik_frame="panda_link8" min_distance="0.01" max_distance="0.2"/>
+                <MTCMoveToStage name="MTCMoveToStage" _uid="14" task="{mtc_task}" planner="{pipeline_planner}" group_name="panda_arm" goal_name="ready" stage_name="Move to ready"/>
+                <MTCPlanTask name="MTCPlanTask" _uid="15" task="{mtc_task}" max_solutions="1"/>
+                <MTCExecuteTask name="MTCExecuteTask" _uid="16" task="{mtc_task}"/>
+            </Sequence>
+        </Sequence>
+    </BehaviorTree>
+    <TreeNodesModel>
+        <Action ID="AlwaysFailure"/>
+        <Action ID="AlwaysSuccess"/>
+        <Control ID="AsyncFallback"/>
+        <Control ID="AsyncSequence"/>
+        <Decorator ID="Delay">
+            <input_port name="delay_msec" type="unsigned int">Tick the child after a few milliseconds</input_port>
+        </Decorator>
+        <Control ID="Fallback"/>
+        <Decorator ID="ForceFailure"/>
+        <Decorator ID="ForceSuccess"/>
+        <Control ID="IfThenElse"/>
+        <Decorator ID="Inverter"/>
+        <Decorator ID="KeepRunningUntilFailure"/>
+        <Decorator ID="LoopBool">
+            <output_port name="value" type="bool"/>
+            <input_port name="if_empty" type="BT::NodeStatus" default="SUCCESS">Status to return if queue is empty: SUCCESS, FAILURE, SKIPPED</input_port>
+            <inout_port name="queue" type="std::shared_ptr&lt;std::deque&lt;bool, std::allocator&lt;bool&gt; &gt; &gt;"/>
+        </Decorator>
+        <Decorator ID="LoopDouble">
+            <output_port name="value" type="double"/>
+            <input_port name="if_empty" type="BT::NodeStatus" default="SUCCESS">Status to return if queue is empty: SUCCESS, FAILURE, SKIPPED</input_port>
+            <inout_port name="queue" type="std::shared_ptr&lt;std::deque&lt;double, std::allocator&lt;double&gt; &gt; &gt;"/>
+        </Decorator>
+        <Decorator ID="LoopInt">
+            <output_port name="value" type="int"/>
+            <input_port name="if_empty" type="BT::NodeStatus" default="SUCCESS">Status to return if queue is empty: SUCCESS, FAILURE, SKIPPED</input_port>
+            <inout_port name="queue" type="std::shared_ptr&lt;std::deque&lt;int, std::allocator&lt;int&gt; &gt; &gt;"/>
+        </Decorator>
+        <Decorator ID="LoopString">
+            <output_port name="value" type="std::string"/>
+            <input_port name="if_empty" type="BT::NodeStatus" default="SUCCESS">Status to return if queue is empty: SUCCESS, FAILURE, SKIPPED</input_port>
+            <inout_port name="queue" type="std::shared_ptr&lt;std::deque&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, std::allocator&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt; &gt;"/>
+        </Decorator>
+        <Action ID="MTCCartesianPlanner">
+            <input_port name="step_size" type="double" default="0.010000">The max distance between waypoints in the Cartesian trajectory (meters)</input_port>
+            <output_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;" default="{cartesian_planner}">An MTC Motion Planner that can be used to find plans in Cartesian space</output_port>
+            <input_port name="max_acceleration_scaling_factor" type="double" default="1.000000">The max acceleration scaling factor to use when timing the trajectory. Valid range [0.0-1.0]</input_port>
+            <input_port name="max_velocity_scaling_factor" type="double" default="1.000000">The max velocity scaling factor to use when timing the trajectory. Valid range [0.0-1.0]</input_port>
+        </Action>
+        <Action ID="MTCConnectStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="mtc_planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="timeout" type="double" default="1.000000">default motion planning timeout to use for this stage</input_port>
+            <input_port name="group_name" type="std::string" default="manipulator">default motion planning group name</input_port>
+            <input_port name="stage_name" type="std::string" default="ConnectStage">default stage name</input_port>
+        </Action>
+        <Action ID="MTCCurrentStateStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Action ID="MTCExecuteTask">
+            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Action ID="MTCInitializeTask">
+            <output_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="task_name" type="std::string"/>
+        </Action>
+        <Action ID="MTCMoveRelativeStage">
+            <input_port name="direction_frame_id" type="std::string" default="world">default frame_id to for the direction vector</input_port>
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="marker_ns" type="std::string" default="MoveRelativeStage">default marker namespace</input_port>
+            <input_port name="max_distance" type="double" default="-1.000000">default disable max distance</input_port>
+            <input_port name="min_distance" type="double"/>
+            <input_port name="ik_frame" type="std::string"/>
+            <input_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="direction_vector" type="geometry_msgs::msg::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt;"/>
+            <input_port name="group_name" type="std::string" default="manipulator">default motion planning group name</input_port>
+            <input_port name="stage_name" type="std::string" default="MoveRelativeStage">default Stage name</input_port>
+        </Action>
+        <Action ID="MTCMoveToStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="goal_name" type="std::string"/>
+            <input_port name="group_name" type="std::string" default="manipulator">default group name</input_port>
+            <input_port name="stage_name" type="std::string" default="MoveToStage">default stage name</input_port>
+        </Action>
+        <Action ID="MTCPipelinePlanner">
+            <output_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="goal_joint_tolerance" type="double" default="0.000010">default joint tolerance is 1e-5</input_port>
+        </Action>
+        <Action ID="MTCPlanTask">
+            <input_port name="max_solutions" type="int" default="0">Default max solutions to search for: 0</input_port>
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Control ID="Parallel">
+            <input_port name="failure_count" type="int" default="1">number of children that need to fail to trigger a FAILURE</input_port>
+            <input_port name="success_count" type="int" default="-1">number of children that need to succeed to trigger a SUCCESS</input_port>
+        </Control>
+        <Control ID="ParallelAll">
+            <input_port name="max_failures" type="int" default="1">If the number of children returning FAILURE exceeds this value, ParallelAll returns FAILURE</input_port>
+        </Control>
+        <Decorator ID="Precondition">
+            <input_port name="else" type="BT::NodeStatus" default="FAILURE">Return status if condition is false</input_port>
+            <input_port name="if" type="std::string"/>
+        </Decorator>
+        <Control ID="ReactiveFallback"/>
+        <Control ID="ReactiveSequence"/>
+        <Decorator ID="Repeat">
+            <input_port name="num_cycles" type="int">Repeat a successful child up to N times. Use -1 to create an infinite loop.</input_port>
+        </Decorator>
+        <Decorator ID="RetryUntilSuccessful">
+            <input_port name="num_attempts" type="int">Execute again a failing child up to N times. Use -1 to create an infinite loop.</input_port>
+        </Decorator>
+        <Decorator ID="RunOnce">
+            <input_port name="then_skip" type="bool" default="true">If true, skip after the first execution, otherwise return the same NodeStatus returned once but the child.</input_port>
+        </Decorator>
+        <Action ID="Script">
+            <input_port name="code" type="std::string">Piece of code that can be parsed</input_port>
+        </Action>
+        <Condition ID="ScriptCondition">
+            <input_port name="code" type="BT::AnyTypeAllowed">Piece of code that can be parsed. Must return false or true</input_port>
+        </Condition>
+        <Control ID="Sequence"/>
+        <Control ID="SequenceWithMemory"/>
+        <Action ID="SetBlackboard">
+            <inout_port name="output_key" type="BT::AnyTypeAllowed">Name of the blackboard entry where the value should be written</inout_port>
+            <input_port name="value" type="BT::AnyTypeAllowed">Value to be written int other output_key</input_port>
+        </Action>
+        <Action ID="Sleep">
+            <input_port name="msec" type="unsigned int"/>
+        </Action>
+        <SubTree ID="SubTree">
+            <input_port name="_autoremap" type="bool" default="false">If true, all the ports with the same name will be remapped</input_port>
+        </SubTree>
+        <Control ID="Switch2">
+            <input_port name="case_2" type="std::string"/>
+            <input_port name="case_1" type="std::string"/>
+            <input_port name="variable" type="std::string"/>
+        </Control>
+        <Control ID="Switch3">
+            <input_port name="case_3" type="std::string"/>
+            <input_port name="case_2" type="std::string"/>
+            <input_port name="case_1" type="std::string"/>
+            <input_port name="variable" type="std::string"/>
+        </Control>
+        <Control ID="Switch4">
+            <input_port name="case_4" type="std::string"/>
+            <input_port name="case_3" type="std::string"/>
+            <input_port name="case_2" type="std::string"/>
+            <input_port name="case_1" type="std::string"/>
+            <input_port name="variable" type="std::string"/>
+        </Control>
+        <Control ID="Switch5">
+            <input_port name="case_5" type="std::string"/>
+            <input_port name="case_4" type="std::string"/>
+            <input_port name="case_3" type="std::string"/>
+            <input_port name="case_2" type="std::string"/>
+            <input_port name="case_1" type="std::string"/>
+            <input_port name="variable" type="std::string"/>
+        </Control>
+        <Control ID="Switch6">
+            <input_port name="case_5" type="std::string"/>
+            <input_port name="case_4" type="std::string"/>
+            <input_port name="case_6" type="std::string"/>
+            <input_port name="case_3" type="std::string"/>
+            <input_port name="case_2" type="std::string"/>
+            <input_port name="case_1" type="std::string"/>
+            <input_port name="variable" type="std::string"/>
+        </Control>
+        <Decorator ID="Timeout">
+            <input_port name="msec" type="unsigned int">After a certain amount of time, halt() the child if it is still running.</input_port>
+        </Decorator>
+        <Action ID="UnsetBlackboard">
+            <input_port name="key" type="std::string">Key of the entry to remove</input_port>
+        </Action>
+        <Control ID="WhileDoElse"/>
+    </TreeNodesModel>
+</root>

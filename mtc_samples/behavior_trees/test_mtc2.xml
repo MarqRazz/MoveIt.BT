@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="TestMtc2">
+    <Sequence name="Test Task :)">
+      <!-- Create free space and cartesian planners -->
+      <MTCCartesianPlanner planner="{cartesian_planner}"/>
+      <MTCPipelinePlanner planner="{pipeline_planner}"/>
+      <!-- ask the arm to move up -->
+      <Sequence name="Move Up">
+        <MTCInitializeTask task_name="Move up"
+                           task="{mtc_task}"/>
+        <MTCCurrentStateStage task="{mtc_task}"/>
+        <MTCMoveRelativeStage task="{mtc_task}"
+                              planner="{cartesian_planner}"
+                              group_name="panda_arm"
+                              ik_frame="panda_link8"
+                              min_distance="0.1"
+                              max_distance="0.2"/>
+        <MTCPlanTask task="{mtc_task}"
+                     max_solutions="1"/>
+        <MTCExecuteTask task="{mtc_task}"/>
+      </Sequence>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="MTCCartesianPlanner"
+            editable="true">
+      <input_port name="planner"/>
+    </Action>
+    <Action ID="MTCCurrentStateStage"
+            editable="true">
+      <input_port name="task"/>
+    </Action>
+    <Action ID="MTCInitializeTask"
+            editable="true">
+      <input_port name="task_name"/>
+      <input_port name="task"/>
+    </Action>
+    <Action ID="MTCMoveRelativeStage"
+            editable="true">
+      <input_port name="task"/>
+      <input_port name="planner"/>
+    </Action>
+    <Action ID="MTCMoveToStage"
+            editable="true">
+      <input_port name="task"/>
+      <input_port name="planner"/>
+      <input_port name="goal_name"/>
+    </Action>
+    <Action ID="MTCPipelinePlanner"
+            editable="true">
+      <input_port name="planner"/>
+    </Action>
+    <Action ID="MTCPlanTask"
+            editable="true">
+      <input_port name="task"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>

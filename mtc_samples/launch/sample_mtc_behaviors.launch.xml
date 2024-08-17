@@ -1,0 +1,46 @@
+<launch>
+
+  <let name="robot_description" value="$(command 'xacro $(find-pkg-share moveit_resources_panda_moveit_config)/config/panda.urdf.xacro')" />
+  <let name="robot_description_semantic" value="$(command 'xacro $(find-pkg-share moveit_resources_panda_moveit_config)/config/panda.srdf')" />
+
+  <!-- MoveGroup -->
+  <node pkg="moveit_ros_move_group" exec="move_group" output="screen">
+    <param name="robot_description_semantic" value="$(var robot_description_semantic)" type="str" />
+    <param from="$(find-pkg-share mtc_samples)/config/moveit.yaml" />
+    <param name="publish_robot_description_semantic" value="true" />
+    <param name="capabilities" value="move_group/ExecuteTaskSolutionCapability" />
+  </node>
+
+  <!-- RViz -->
+  <node pkg="rviz2" exec="rviz2" name="rviz2" output="log" args="-d $(find-pkg-share moveit_task_constructor_demo)/config/mtc.rviz">
+    <param from="$(find-pkg-share mtc_samples)/config/moveit.yaml" />
+  </node>
+
+  <!-- Static TF -->
+  <node pkg="tf2_ros" exec="static_transform_publisher" name="static_transform_publisher" output="log"
+    args="--frame-id world --child-frame-id panda_link0" />
+
+  <!-- Robot State to TF -->
+  <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher" output="both" >
+    <param name="robot_description" value="$(var robot_description)" type="str" />
+  </node>
+
+  <!-- ros2_control -->
+  <node pkg="controller_manager" exec="ros2_control_node" output="both" >
+    <remap from="~/robot_description" to="/robot_description" />
+    <param from="$(find-pkg-share moveit_resources_panda_moveit_config)/config/ros2_controllers.yaml" />
+  </node>
+
+  <!-- ros2_control spawners -->
+  <node pkg="controller_manager" exec="spawner" args="joint_state_broadcaster -c /controller_manager" />
+  <node pkg="controller_manager" exec="spawner" args="panda_arm_controller -c /controller_manager" />
+  <node pkg="controller_manager" exec="spawner" args="panda_hand_controller -c /controller_manager" />
+
+  <node pkg="btcpp_ros2_samples" exec="sample_bt_executor" output="screen">
+   <!-- launch-prefix="gdbserver localhost:3000"> -->
+   <!-- This is required to pass the kinematics plugins to the instance of MTC we are using -->
+    <param from="$(find-pkg-share mtc_samples)/config/moveit.yaml" />
+    <param from="$(find-pkg-share mtc_samples)/config/sample_mtc_executor.yaml"/>
+  </node>
+
+</launch>

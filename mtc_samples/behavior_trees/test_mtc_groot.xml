@@ -1,0 +1,75 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="TestMtc" _fullpath="">
+        <Sequence name="Test Task :)" _uid="1">
+            <MTCCartesianPlanner name="MTCCartesianPlanner" _uid="2" max_velocity_scaling_factor="1.000000" max_acceleration_scaling_factor="1.000000" step_size="0.010000" planner="{cartesian_planner}"/>
+            <MTCPipelinePlanner name="MTCPipelinePlanner" _uid="3" goal_joint_tolerance="0.000010" planner="{pipeline_planner}"/>
+            <Sequence name="Move Up" _uid="4">
+                <MTCInitializeTask name="MTCInitializeTask" _uid="5" task_name="Move up" task="{mtc_task}"/>
+                <MTCCurrentStateStage name="MTCCurrentStateStage" _uid="6" task="{mtc_task}"/>
+                <MTCMoveRelativeStage name="MTCMoveRelativeStage" _uid="7" stage_name="MoveRelativeStage" direction_frame_id="world" marker_ns="MoveRelativeStage" task="{mtc_task}" planner="{cartesian_planner}" group_name="panda_arm" ik_frame="panda_link8" min_distance="0.1" max_distance="0.2"/>
+                <MTCPlanTask name="MTCPlanTask" _uid="8" task="{mtc_task}" max_solutions="1"/>
+                <MTCExecuteTask name="MTCExecuteTask" _uid="9" task="{mtc_task}"/>
+            </Sequence>
+            <Sequence name="Move up more and back to Ready" _uid="10">
+                <MTCInitializeTask name="MTCInitializeTask" _uid="11" task_name="Move up more and back to ready" task="{mtc_task}"/>
+                <MTCCurrentStateStage name="MTCCurrentStateStage" _uid="12" task="{mtc_task}"/>
+                <MTCMoveRelativeStage name="MTCMoveRelativeStage" _uid="13" stage_name="MoveRelativeStage" direction_frame_id="world" marker_ns="MoveRelativeStage" task="{mtc_task}" planner="{cartesian_planner}" group_name="panda_arm" ik_frame="panda_link8" min_distance="0.01" max_distance="0.2"/>
+                <MTCMoveToStage name="MTCMoveToStage" _uid="14" task="{mtc_task}" planner="{pipeline_planner}" group_name="panda_arm" goal_name="ready" stage_name="Move to ready"/>
+                <MTCPlanTask name="MTCPlanTask" _uid="15" task="{mtc_task}" max_solutions="1"/>
+                <MTCExecuteTask name="MTCExecuteTask" _uid="16" task="{mtc_task}"/>
+            </Sequence>
+        </Sequence>
+    </BehaviorTree>
+    <TreeNodesModel>
+        <Action ID="MTCCartesianPlanner">
+            <input_port name="step_size" type="double" default="0.010000">default step size is 0.01</input_port>
+            <output_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="max_acceleration_scaling_factor" type="double" default="1.000000">default acceleration scaling is 1.0</input_port>
+            <input_port name="max_velocity_scaling_factor" type="double" default="1.000000">default velocity scaling is 1.0</input_port>
+        </Action>
+        <Action ID="MTCConnectStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="mtc_planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="timeout" type="double" default="1.000000">default motion planning timeout to use for this stage</input_port>
+            <input_port name="group_name" type="std::string" default="manipulator">default motion planning group name</input_port>
+            <input_port name="stage_name" type="std::string" default="ConnectStage">default stage name</input_port>
+        </Action>
+        <Action ID="MTCCurrentStateStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Action ID="MTCExecuteTask">
+            <input_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+        <Action ID="MTCInitializeTask">
+            <output_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="task_name" type="std::string"/>
+        </Action>
+        <Action ID="MTCMoveRelativeStage">
+            <input_port name="direction_frame_id" type="std::string" default="world">default frame_id to for the direction vector</input_port>
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="marker_ns" type="std::string" default="MoveRelativeStage">default marker namespace</input_port>
+            <input_port name="max_distance" type="double" default="-1.000000">default disable max distance</input_port>
+            <input_port name="min_distance" type="double"/>
+            <input_port name="ik_frame" type="std::string"/>
+            <input_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="direction_vector" type="geometry_msgs::msg::Vector3Stamped_&lt;std::allocator&lt;void&gt; &gt;"/>
+            <input_port name="group_name" type="std::string" default="manipulator">default motion planning group name</input_port>
+            <input_port name="stage_name" type="std::string" default="MoveRelativeStage">default Stage name</input_port>
+        </Action>
+        <Action ID="MTCMoveToStage">
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+            <input_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="goal_name" type="std::string"/>
+            <input_port name="group_name" type="std::string" default="manipulator">default group name</input_port>
+            <input_port name="stage_name" type="std::string" default="MoveToStage">default stage name</input_port>
+        </Action>
+        <Action ID="MTCPipelinePlanner">
+            <output_port name="planner" type="std::shared_ptr&lt;moveit::task_constructor::solvers::PlannerInterface&gt;"/>
+            <input_port name="goal_joint_tolerance" type="double" default="0.000010">default joint tolerance is 1e-5</input_port>
+        </Action>
+        <Action ID="MTCPlanTask">
+            <input_port name="max_solutions" type="int" default="0">Default max solutions to search for: 0</input_port>
+            <inout_port name="task" type="std::shared_ptr&lt;moveit::task_constructor::Task&gt;"/>
+        </Action>
+    </TreeNodesModel>
+</root>
