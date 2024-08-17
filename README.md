@@ -1,9 +1,10 @@
-[![Build and Test (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/build_and_test.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/build_and_test.yaml)
+[![Build and Test (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml.yaml)
 
 # MoveIt.BT
 
-This ROS 2 package is designed to make building, combining and executing [BehaviorTree.CPP](https://www.behaviortree.dev/docs/intro) based Behaviors easy and reusable.
-It includes an Action Server that is able to register plugins and Trees/Subtrees so that a user can execute any known BehaviorTree by simply sending the name of it to the server.
+!!UNDER CONSTRUCTION!!
+
+This ROS 2 package is designed to make building, combining and executing [MoveIt](https://moveit.picknik.ai/main/index.html) based Behaviors easy and reusable.
 
 An example launch file is included that starts the Behavior server and loads a list of plugins and BehaviorTrees from `yaml` file:
 ``` bash
