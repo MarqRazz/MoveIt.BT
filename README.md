@@ -1,44 +1,34 @@
-[![Build and Test (humble)](https://github.com/MarqRazz/ActionServer/actions/workflows/build_and_test.yaml/badge.svg)](https://github.com/MarqRazz/ActionServer/actions/workflows/build_and_test.yaml)
+[![Build and Test (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/build_and_test.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/build_and_test.yaml)
 
-# ActionServer.BT
+# MoveIt.BT
 
 This ROS 2 package is designed to make building, combining and executing [BehaviorTree.CPP](https://www.behaviortree.dev/docs/intro) based Behaviors easy and reusable.
 It includes an Action Server that is able to register plugins and Trees/Subtrees so that a user can execute any known BehaviorTree by simply sending the name of it to the server.
 
-An example launch file is included that starts the server and loads a list of plugins and BehaviorTrees from `yaml` file:
+An example launch file is included that starts the Behavior server and loads a list of plugins and BehaviorTrees from `yaml` file:
 ``` bash
 ros2 launch action_server_bt_samples action_server_bt.launch.xml
 ```
 
 As the server starts up it will print out the name of the Action followed by the plugins and BehaviorTrees have been loaded.
+The specific ones important to this demo are:
 ```
-[action_server_bt]: Starting Action Server: behavior_server
-[action_server_bt]: Loaded Plugin: libdummy_nodes_dyn.so
-[action_server_bt]: Loaded Plugin: libmovebase_node_dyn.so
-[action_server_bt]: Loaded Plugin: libcrossdoor_nodes_dyn.so
-[action_server_bt]: Loaded ROS Plugin: libsleep_plugin.so
-[action_server_bt]: Loaded BehaviorTree: door_closed.xml
-[action_server_bt]: Loaded BehaviorTree: cross_door.xml
+[sample_bt_executor-9] [bt_action_server 1723905390.146525490]: Loaded ROS Plugin: libmtc_plugin.so
+[sample_bt_executor-9] [bt_action_server 1723905390.148748207]: Loaded BehaviorTree: test_mtc.xml
+
 ```
 
-To call ActionServer.BT from the command line:
+To run a simple example motion:
 ``` bash
-ros2 action send_goal /behavior_server action_server_bt_msgs/action/ActionTree "{target_tree: CrossDoor}"
-```
-> *NOTE:* the name of the Action Server is customizable and is renamed in `action_server_bt_sample.yaml`
-
-You can also try a Behavior that is a ROS Action or Service client itself.
-Please see the [BehaviorTree.CPP](https://www.behaviortree.dev/docs/ros2_integration) documentation on building Behaviors based on ROS interfaces.
-```bash
-ros2 action send_goal /behavior_server action_server_bt_msgs/action/ActionTree "{target_tree: SleepActionSample}"
+ros2 action send_goal /behavior_server btcpp_ros2_interfaces/action/ExecuteTree "{target_tree: TestMtc}"
 ```
 
 ## Building from source
 
 1. Clone this repository and its required dependencies (Once the upstream repositories have been updated to be compatible with this repository this step will be removed):
 ```bash
-git clone https://github.com/MarqRazz/ActionServer.BT.git
-vcs import < ActionServer.BT/action_server_bt.repos
+git clone https://github.com/MarqRazz/MoveIt.BT.git
+vcs import < MoveIt.BT/moveit_bt.repos
 ```
 
 2. Install dependencies with rosdep:
