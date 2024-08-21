@@ -7,7 +7,7 @@
   <node pkg="moveit_ros_move_group" exec="move_group" output="screen">
     <param name="robot_description_semantic" value="$(var robot_description_semantic)" type="str" />
     <param from="$(find-pkg-share mtc_samples)/config/moveit.yaml" />
-    <param name="publish_robot_description_semantic" value="true" />
+    <param name="publish_robot_description_semantic" value="true" /> <!-- we want MTC to get it's SRDF copy from here -->
     <param name="capabilities" value="move_group/ExecuteTaskSolutionCapability" />
   </node>
 

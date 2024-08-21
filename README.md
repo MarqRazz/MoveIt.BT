@@ -1,4 +1,4 @@
-[![Build and Test (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml.yaml)
+[![Format (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml.yaml)
 
 # MoveIt.BT
 
@@ -6,9 +6,9 @@
 
 This ROS 2 package is designed to make building, combining and executing [MoveIt](https://moveit.picknik.ai/main/index.html) based Behaviors easy and reusable.
 
-An example launch file is included that starts the Behavior server and loads a list of plugins and BehaviorTrees from `yaml` file:
+An example launch file is included that starts the Behavior server and loads a list of plugins and BehaviorTrees from [yaml](https://github.com/MarqRazz/MoveIt.BT/blob/main/mtc_samples/config/sample_mtc_executor.yaml) file:
 ``` bash
-ros2 launch action_server_bt_samples action_server_bt.launch.xml
+ros2 launch mtc_samples sample_mtc_behaviors.launch.xml
 ```
 
 As the server starts up it will print out the name of the Action followed by the plugins and BehaviorTrees have been loaded.
