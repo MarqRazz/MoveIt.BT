@@ -14,16 +14,6 @@ find_package(moveit_task_constructor_core REQUIRED)
 find_package(moveit_task_constructor_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 
-set(THIS_PACKAGE_DEPS
-    behaviortree_cpp
-    behaviortree_ros2
-    moveit_core
-    moveit_ros_planning
-    moveit_ros_planning_interface
-    moveit_task_constructor_core
-    moveit_task_constructor_msgs
-    rclcpp)
-
 # ----------------------------------
 add_library(
   mtc_plugin SHARED
@@ -41,7 +31,23 @@ target_include_directories(
   mtc_plugin PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                      $<INSTALL_INTERFACE:include>)
 target_compile_definitions(mtc_plugin PRIVATE BT_PLUGIN_EXPORT)
-ament_target_dependencies(mtc_plugin ${THIS_PACKAGE_DEPS})
+# `ament_target_dependencies` was removed in Lyrical, so link the exported
+# targets directly. Keep this list in sync with package.xml. Message packages
+# expose a `<pkg>_TARGETS` list rather than a single namespaced target.
+target_link_libraries(
+  mtc_plugin
+  PUBLIC behaviortree_cpp::behaviortree_cpp
+         behaviortree_ros2::behaviortree_ros2
+         moveit_core::moveit_core
+         moveit_ros_planning::moveit_ros_planning
+         moveit_ros_planning_interface::moveit_ros_planning_interface
+         moveit_task_constructor_core::moveit_task_constructor_core
+         # The stage classes (CurrentState, MoveTo, MoveRelative, Connect) live
+         # in a second library. Linking only the umbrella target builds clean
+         # but leaves undefined symbols that surface at plugin load.
+         moveit_task_constructor_core::moveit_task_constructor_core_stages
+         rclcpp::rclcpp
+         ${moveit_task_constructor_msgs_TARGETS})
 
 # Install headers
 install(DIRECTORY include/ DESTINATION include)

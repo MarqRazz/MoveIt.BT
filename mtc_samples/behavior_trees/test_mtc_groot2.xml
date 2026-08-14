@@ -141,9 +141,6 @@
         <Action ID="Sleep">
             <input_port name="msec" type="unsigned int"/>
         </Action>
-        <SubTree ID="SubTree">
-            <input_port name="_autoremap" type="bool" default="false">If true, all the ports with the same name will be remapped</input_port>
-        </SubTree>
         <Control ID="Switch2">
             <input_port name="case_2" type="std::string"/>
             <input_port name="case_1" type="std::string"/>

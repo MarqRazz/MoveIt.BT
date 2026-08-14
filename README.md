@@ -1,4 +1,4 @@
-[![Format (humble)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml.yaml)
+[![Format (lyrical)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml/badge.svg)](https://github.com/MarqRazz/MoveIt.BT/actions/workflows/format.yaml.yaml)
 
 # MoveIt.BT
 

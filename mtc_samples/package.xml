@@ -14,7 +14,9 @@
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
   <exec_depend>joint_trajectory_controller</exec_depend>
-  <exec_depend>gripper_controllers</exec_depend>
+  <!-- Renamed upstream in ros2_controllers; `gripper_controllers` does not
+       exist on Lyrical. -->
+  <exec_depend>parallel_gripper_controller</exec_depend>
   <exec_depend>mtc_bt</exec_depend>
   <exec_depend>moveit_resources_panda_description</exec_depend>
   <exec_depend>moveit_resources_panda_moveit_config</exec_depend>

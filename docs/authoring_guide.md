@@ -235,13 +235,13 @@ but does not exist at runtime:
 
 1. `mtc_bt/include/mtc_bt/mtc_<thing>.hpp` — the class and its `providedPorts()`.
 2. `mtc_bt/src/mtc_<thing>.cpp` — the tick.
-3. `mtc_bt/CMakeLists.txt:28` — add the `.cpp` to the `mtc_plugin` target's source
+3. `mtc_bt/CMakeLists.txt:18` — add the `.cpp` to the `mtc_plugin` target's source
    list.
 4. `mtc_bt/src/mtc_plugin.cpp:31-39` — a `registerNodeType<>` line inside
    `BT_REGISTER_ROS_NODES`.
 
 Registration must live in a `.cpp` (`mtc_plugin.cpp:29`), and the whole library is
-built with `BT_PLUGIN_EXPORT` (`mtc_bt/CMakeLists.txt:43`).
+built with `BT_PLUGIN_EXPORT` (`mtc_bt/CMakeLists.txt:33`).
 
 ## 2.2 Choosing the base class
 
@@ -351,7 +351,7 @@ consider `std::atomic<BT::NodeStatus>`.
 ## 2.6 Install and discovery
 
 The plugin does **not** install to `lib/`. It installs to
-`share/mtc_bt/bt_plugins` (`mtc_bt/CMakeLists.txt:50-52`), because the executor
+`share/mtc_bt/bt_plugins` (`mtc_bt/CMakeLists.txt:56-58`), because the executor
 finds plugins by package-relative directory, listed in
 `mtc_samples/config/sample_mtc_executor.yaml:8`. Behavior trees are found the same
 way (`sample_mtc_executor.yaml:13`) — every `.xml` in a listed directory is loaded
@@ -421,5 +421,9 @@ defects in the library, not in the documentation of it.
    they are unusually easy to test without a robot, by ticking a node and asserting
    on the resulting stage list.
 
-9. **`moveit_bt.repos` pins `moveit_task_constructor` to `humble`** while the
-   development checkout tracks `ros2`.
+9. ~~**`moveit_bt.repos` pins `moveit_task_constructor` to `humble`** while the
+   development checkout tracks `ros2`.~~ **Fixed** — it now points at the
+   `MarqRazz` fork on `marq-devel`. The file also carries `moveit2` on `main`,
+   because MoveIt has no binary release for Lyrical: only `moveit_common`,
+   `moveit_msgs`, `moveit_configs_utils` and the `moveit_resources_*` set are
+   published, so the core libraries MTC links against must be built from source.

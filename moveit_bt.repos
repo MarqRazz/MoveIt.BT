@@ -1,9 +1,36 @@
 repositories:
   moveit_task_constructor:
     type: git
-    url: https://github.com/moveit/moveit_task_constructor.git
-    version: humble
+    url: https://github.com/MarqRazz/moveit_task_constructor.git
+    version: marq-devel
   BehaviorTree.ROS2:
+    # `humble` is this repo's default development branch, not a distro pin.
+    # Upstream publishes no per-distro branches, so it stays as-is on Lyrical.
     type: git
     url: https://github.com/MarqRazz/BehaviorTree.ROS2.git
     version: humble
+  moveit2:
+    # MoveIt has no binary release for Lyrical: only moveit_common, moveit_msgs,
+    # moveit_configs_utils and the moveit_resources_* set are published. The core
+    # libraries MTC links against (moveit_core, moveit_ros_planning,
+    # moveit_ros_planning_interface, move_group) must be built from source.
+    # `main` is the rolling line that targets Lyrical; there is no `lyrical` branch.
+    type: git
+    url: https://github.com/moveit/moveit2.git
+    version: main
+  moveit_msgs:
+    # moveit2 `main` uses fields the released Lyrical moveit_msgs does not have
+    # (e.g. MotionPlanRequest.smoothness_level, which pilz_industrial_motion_planner
+    # references). moveit2.repos carries moveit_msgs for exactly this reason:
+    # it is released together with moveit, so it must match the source checkout.
+    type: git
+    url: https://github.com/moveit/moveit_msgs.git
+    version: ros2
+  osqp_vendor:
+    # moveit_core does find_package(osqp REQUIRED) for online_signal_smoothing.
+    # rosdep resolves osqp_vendor to ros-lyrical-osqp-vendor, but that package is
+    # not published for Lyrical and Ubuntu ships no osqp at all, so it is built
+    # from source here.
+    type: git
+    url: https://github.com/moveit/osqp_vendor.git
+    version: main

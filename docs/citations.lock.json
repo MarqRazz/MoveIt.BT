@@ -1,23 +1,23 @@
 {
- "commit": "178c1cf",
+ "commit": "161966a",
  "entries": {
-  "mtc_bt/CMakeLists.txt:28": {
+  "mtc_bt/CMakeLists.txt:18": {
    "file": "mtc_bt/CMakeLists.txt",
    "lines": {
-    "28": "add_library("
+    "18": "add_library("
    }
   },
-  "mtc_bt/CMakeLists.txt:43": {
+  "mtc_bt/CMakeLists.txt:33": {
    "file": "mtc_bt/CMakeLists.txt",
    "lines": {
-    "43": "target_compile_definitions(mtc_plugin PRIVATE BT_PLUGIN_EXPORT)"
+    "33": "target_compile_definitions(mtc_plugin PRIVATE BT_PLUGIN_EXPORT)"
    }
   },
-  "mtc_bt/CMakeLists.txt:50-52": {
+  "mtc_bt/CMakeLists.txt:56-58": {
    "file": "mtc_bt/CMakeLists.txt",
    "lines": {
-    "50": "install(",
-    "52": "LIBRARY DESTINATION share/${PROJECT_NAME}/bt_plugins"
+    "56": "install(",
+    "58": "LIBRARY DESTINATION share/${PROJECT_NAME}/bt_plugins"
    }
   },
   "mtc_bt/src/mtc_plugin.cpp:31-39": {
