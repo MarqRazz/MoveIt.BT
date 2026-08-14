@@ -34,7 +34,6 @@ public:
              BT::InputPort<double>(kPortMinDistance),
              BT::InputPort<double>(kPortMaxDistance, -1.0, "default disable max distance"),
              BT::InputPort<std::string>(kPortMarkerNs, "MoveRelativeStage", "default marker namespace"),
-             BT::InputPort<std::string>(kPortDirectionFrameId, "world", "default frame_id to for the direction vector"),
              BT::InputPort<geometry_msgs::msg::Vector3Stamped>(kPortDirectionVector),
              BT::BidirectionalPort<moveit::task_constructor::TaskPtr>(kPortTask) };
   }
@@ -50,7 +49,6 @@ private:
   static constexpr auto kPortMinDistance = "min_distance";
   static constexpr auto kPortMaxDistance = "max_distance";
   static constexpr auto kPortMarkerNs = "marker_ns";
-  static constexpr auto kPortDirectionFrameId = "direction_frame_id";
   static constexpr auto kPortDirectionVector = "direction_vector";
   static constexpr auto kPortTask = "task";
 };

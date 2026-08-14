@@ -11,29 +11,20 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "behaviortree_cpp/action_node.h"
-#include <moveit/planning_scene/planning_scene.h>
-#include <moveit/task_constructor/task.h>
-#include <moveit/task_constructor/stages/current_state.h>
-#include <moveit/task_constructor/stages/predicate_filter.h>
+#pragma once
+#include <moveit_msgs/msg/collision_object.hpp>
 
-namespace mtc_bt
+namespace moveit_msgs_bt
 {
-class MTCCurrentStateStage : public BT::SyncActionNode
-{
-public:
-  MTCCurrentStateStage(const std::string& name, const BT::NodeConfig& config);
 
-  static BT::PortsList providedPorts()
-  {
-    return { BT::BidirectionalPort<moveit::task_constructor::TaskPtr>(kPortTask) };
-  }
+enum CollisionShape { BOX=shape_msgs::msg::SolidPrimitive::BOX,
+                      CONE=shape_msgs::msg::SolidPrimitive::CONE,
+                      CYLINDER=shape_msgs::msg::SolidPrimitive::CYLINDER,
+                      SPHERE=shape_msgs::msg::SolidPrimitive::SPHERE};
 
-  BT::NodeStatus tick() override;
+enum CollisionOperation { ADD=moveit_msgs::msg::CollisionObject::ADD,
+                          APPEND=moveit_msgs::msg::CollisionObject::APPEND,
+                          MOVE=moveit_msgs::msg::CollisionObject::MOVE,
+                          REMOVE=moveit_msgs::msg::CollisionObject::REMOVE};
 
-private:
-  // Port name definitions
-  static constexpr auto kPortTask = "task";
-};
-
-}  // namespace mtc_bt
+}  // namespace moveit_msgs_bt

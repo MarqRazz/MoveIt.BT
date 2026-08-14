@@ -11,7 +11,7 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_move_relative.hpp"
+#include "mtc_bt/stages/mtc_move_relative.hpp"
 #include <moveit_task_constructor_msgs/msg/trajectory_execution_info.hpp>
 
 namespace
@@ -30,13 +30,13 @@ MTCMoveRelativeStage::MTCMoveRelativeStage(const std::string& name, const BT::No
 BT::NodeStatus MTCMoveRelativeStage::tick()
 {
   // these ports have defaults defined in .hpp file
-  std::string stage_name, group_name, marker_ns, direction_frame_id;
+  std::string stage_name, group_name, marker_ns;
   double max_distance;
   getInput<std::string>(kPortStageName, stage_name);
   getInput<std::string>(kPortGroupName, group_name);
   getInput<double>(kPortMaxDistance, max_distance);
   getInput<std::string>(kPortMarkerNs, marker_ns);
-  getInput<std::string>(kPortDirectionFrameId, direction_frame_id);
+  
   // validate required input ports
   TaskPtr task;
   if (!getInput<TaskPtr>(kPortTask, task))
@@ -62,21 +62,22 @@ BT::NodeStatus MTCMoveRelativeStage::tick()
     RCLCPP_ERROR(kLogger, "missing required input [%s]", kPortIkFrame);
     return BT::NodeStatus::FAILURE;
   }
+  geometry_msgs::msg::Vector3Stamped direction_vector;
+  if (!getInput<geometry_msgs::msg::Vector3Stamped>(kPortDirectionVector, direction_vector))
+  {
+    RCLCPP_ERROR(kLogger, "missing required input [%s]", kPortIkFrame);
+    return BT::NodeStatus::FAILURE;
+  }
 
   // Create the MoveRelative stage and fill everything in
   auto stage = std::make_unique<stages::MoveRelative>(stage_name, planner);
   stage->setGroup(group_name);
   stage->setMinMaxDistance(min_distance, max_distance);
   stage->setIKFrame(ik_frame);
-  stage->properties().set("marker_ns", marker_ns);
-
-  // Set upward direction
-  geometry_msgs::msg::Vector3Stamped vec;
-  vec.header.frame_id = direction_frame_id;
-  vec.vector.z = 1.0;
-  stage->setDirection(vec);
-  std::vector<std::string> controllers = { "panda_arm_controller", "panda_hand_controller" };
-  stage->properties().set("trajectory_execution_info", TrajectoryExecutionInfo().set__controller_names(controllers));
+  stage->setMarkerNS(marker_ns);
+  stage->setDirection(direction_vector);
+  // std::vector<std::string> controllers = { "panda_arm_controller", "panda_hand_controller" };
+  // stage->properties().set("trajectory_execution_info", TrajectoryExecutionInfo().set__controller_names(controllers));
   task->insert(std::move(stage));
 
   setOutput(kPortTask, task);

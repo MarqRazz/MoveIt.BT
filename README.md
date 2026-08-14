@@ -13,13 +13,12 @@ ros2 launch mtc_samples sample_mtc_behaviors.launch.xml
 
 As the server starts up it will print out the name of the Action followed by the plugins and BehaviorTrees have been loaded.
 The specific ones important to this demo are:
-```
+```bash
 [sample_bt_executor-9] [bt_action_server 1723905390.146525490]: Loaded ROS Plugin: libmtc_plugin.so
 [sample_bt_executor-9] [bt_action_server 1723905390.148748207]: Loaded BehaviorTree: test_mtc.xml
-
 ```
 
-To run a simple example motion:
+To execute the example MTC [Behavior Tree](https://github.com/MarqRazz/MoveIt.BT/blob/main/mtc_samples/behavior_trees/test_mtc.xml#L3) call the action server with the name of the `BehaviorTree ID` you would like to execute:
 ``` bash
 ros2 action send_goal /behavior_server btcpp_ros2_interfaces/action/ExecuteTree "{target_tree: TestMtc}"
 ```

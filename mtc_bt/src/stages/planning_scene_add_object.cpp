@@ -11,22 +11,27 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_move_to.hpp"
+#include "mtc_bt/stages/planning_scene_add_object.hpp"
 
 namespace
 {
-static const auto kLogger = rclcpp::get_logger("MTCMoveToStage");
+static const auto kLogger = rclcpp::get_logger("MTCPlanningSceneAddObject");
 using namespace moveit::task_constructor;
 }  // namespace
 
 namespace mtc_bt
 {
-MTCMoveToStage::MTCMoveToStage(const std::string& name, const BT::NodeConfig& config) : SyncActionNode(name, config)
+MTCPlanningSceneAddObject::MTCPlanningSceneAddObject(const std::string& name, const BT::NodeConfig& config)
+  : SyncActionNode(name, config)
 {
 }
 
-BT::NodeStatus MTCMoveToStage::tick()
+BT::NodeStatus MTCPlanningSceneAddObject::tick()
 {
+  // these ports have defaults defined in .hpp file
+  std::string stage_name;
+  getInput<std::string>(kPortStageName, stage_name);
+
   // validate input ports
   TaskPtr task;
   if (!getInput<TaskPtr>(kPortTask, task))
@@ -34,38 +39,16 @@ BT::NodeStatus MTCMoveToStage::tick()
     RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortTask);
     return BT::NodeStatus::FAILURE;
   }
-  std::string stage_name;
-  if (!getInput<std::string>(kPortStageName, stage_name))
+  moveit_msgs::msg::CollisionObject collision_obj_msg;
+  if (!getInput<moveit_msgs::msg::CollisionObject>(kPortCollisionObjMsg, collision_obj_msg))
   {
-    RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortStageName);
-    return BT::NodeStatus::FAILURE;
-  }
-  std::string group_name;
-  if (!getInput<std::string>(kPortGroupName, group_name))
-  {
-    RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortGroupName);
-    return BT::NodeStatus::FAILURE;
-  }
-  std::string goal_name;
-  if (!getInput<std::string>(kPortGoalName, goal_name))
-  {
-    RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortGoalName);
-    return BT::NodeStatus::FAILURE;
-  }
-  solvers::PlannerInterfacePtr mtc_planner;
-  if (!getInput<solvers::PlannerInterfacePtr>(kPortMtcPlanner, mtc_planner))
-  {
-    RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortMtcPlanner);
+    RCLCPP_ERROR(kLogger, "Missing required input: [%s]", kPortCollisionObjMsg);
     return BT::NodeStatus::FAILURE;
   }
 
-  // create the stage and set the output port to it
-  auto stage = std::make_unique<stages::MoveTo>(stage_name, mtc_planner);
-  stage->setGroup(group_name);
-  stage->setGoal(goal_name);
-  stage->properties().configureInitFrom(Stage::PARENT);
-  std::vector<std::string> controllers = { "panda_arm_controller", "panda_hand_controller" };
-  stage->properties().set("trajectory_execution_info", TrajectoryExecutionInfo().set__controller_names(controllers));
+
+  auto stage = std::make_unique<stages::ModifyPlanningScene>(stage_name);
+  stage->addObject(collision_obj_msg);
   task->add(std::move(stage));
 
   setOutput(kPortTask, task);

@@ -11,8 +11,7 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_init_task.hpp"
-// #include <moveit_task_constructor/core/include/moveit/task_constructor/trajectory_execution_info.h>
+#include "mtc_bt/tasks/mtc_init_task.hpp"
 #include <moveit_task_constructor_msgs/msg/trajectory_execution_info.hpp>
 
 namespace
@@ -44,8 +43,8 @@ BT::NodeStatus MTCInitializeTask::tick()
   auto node = node_params_.nh.lock();
   task->stages()->setName(task_name);
   task->loadRobotModel(node);
-  std::vector<std::string> controllers = { "panda_arm_controller", "panda_hand_controller" };
-  task->setProperty("trajectory_execution_info", TrajectoryExecutionInfo().set__controller_names(controllers));
+  // std::vector<std::string> controllers = { "panda_arm_controller", "panda_hand_controller" };
+  // task->setProperty("trajectory_execution_info", TrajectoryExecutionInfo().set__controller_names(controllers));
 
   setOutput(kPortTask, task);
   return BT::NodeStatus::SUCCESS;

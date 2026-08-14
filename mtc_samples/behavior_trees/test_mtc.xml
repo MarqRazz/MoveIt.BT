@@ -2,6 +2,10 @@
 <root BTCPP_format="4">
   <BehaviorTree ID="TestMtc">
     <Sequence name="Test Task :)">
+      <!-- Add example scene to the robots planning_scene -->
+      <LoadPlanningSceneFromFile package_name="mtc_samples"
+                                 subdirectory_name="config"
+                                 file_name="mtc_pnp_example.scene"/>
       <!-- Create free space and cartesian planners -->
       <MTCCartesianPlanner planner="{cartesian_planner}"/>
       <MTCPipelinePlanner planner="{pipeline_planner}"/>
@@ -42,41 +46,4 @@
       </Sequence>
     </Sequence>
   </BehaviorTree>
-
-  <!-- Description of Node Models (used by Groot) -->
-  <TreeNodesModel>
-    <Action ID="MTCCartesianPlanner"
-            editable="true">
-      <input_port name="planner"/>
-    </Action>
-    <Action ID="MTCCurrentStateStage"
-            editable="true">
-      <input_port name="task"/>
-    </Action>
-    <Action ID="MTCInitializeTask"
-            editable="true">
-      <input_port name="task_name"/>
-      <input_port name="task"/>
-    </Action>
-    <Action ID="MTCMoveRelativeStage"
-            editable="true">
-      <input_port name="task"/>
-      <input_port name="planner"/>
-    </Action>
-    <Action ID="MTCMoveToStage"
-            editable="true">
-      <input_port name="task"/>
-      <input_port name="planner"/>
-      <input_port name="goal_name"/>
-    </Action>
-    <Action ID="MTCPipelinePlanner"
-            editable="true">
-      <input_port name="planner"/>
-    </Action>
-    <Action ID="MTCPlanTask"
-            editable="true">
-      <input_port name="task"/>
-    </Action>
-  </TreeNodesModel>
-
 </root>

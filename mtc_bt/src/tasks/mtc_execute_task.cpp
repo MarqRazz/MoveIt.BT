@@ -11,7 +11,7 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_execute_task.hpp"
+#include "mtc_bt/tasks/mtc_execute_task.hpp"
 
 namespace
 {
@@ -36,18 +36,11 @@ BT::NodeStatus MTCExecuteTask::onStart()
 
   if (task_->solutions().empty())
   {
-    RCLCPP_ERROR(kLogger, "Input task has no solutions to execute", kPortTask);
+    RCLCPP_ERROR(kLogger, "Input task [%s] has no solutions to execute", kPortTask);
     return BT::NodeStatus::FAILURE;
   }
 
   planning_status_ = BT::NodeStatus::RUNNING;
-
-  // join the last thread if possible
-  if (thread_.joinable())
-  {
-    RCLCPP_ERROR_STREAM(kLogger, "Thread is joinable");  // I don't think this can happen
-    thread_.join();
-  }
 
   // spin up a thread to plan the task
   thread_ = std::thread{ [=]() { executeTask(); } };

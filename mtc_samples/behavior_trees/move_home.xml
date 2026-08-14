@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Move Home">
+      <Sequence name="Move Home">
+        <MTCPipelinePlanner planner="{pipeline_planner}"/>
+        <MTCInitializeTask task_name="Move Home"
+                           task="{mtc_task}"/>
+        <MTCCurrentStateStage stage_name="current state"
+                              task="{mtc_task}"/>
+        <MTCMoveToStage stage_name="move to home pose"
+                        planner="{pipeline_planner}"
+                        group_name="right_manipulator"
+                        goal_name="right_arm_home"
+                        task="{mtc_task}"/>
+        <MTCPlanTask task="{mtc_task}"
+                     max_solutions="1"/>
+        <MTCExecuteTask task="{mtc_task}"/>
+      </Sequence>
+  </BehaviorTree>
+</root>

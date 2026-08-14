@@ -11,39 +11,17 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_pipeline_planner.hpp"
-
-namespace
-{
-static const auto kLogger = rclcpp::get_logger("MTCConnectStage");
-using namespace moveit::task_constructor;
-}  // namespace
+#pragma once
+#include <moveit/task_constructor/stages/generate_random_pose.h>
 
 namespace mtc_bt
 {
-MTCPipelinePlanner::MTCPipelinePlanner(const std::string& name, const BT::NodeConfig& config,
-                                       const BT::RosNodeParams& params)
-  : SyncActionNode(name, config), node_params_(params)
-{
-}
 
-BT::NodeStatus MTCPipelinePlanner::tick()
-{
-  // validate the input port
-  double joint_tolerance;
-  if (!getInput<double>(kPortJointGoalTolerance, joint_tolerance) && joint_tolerance < 0.)
-  {
-    RCLCPP_WARN(kLogger, "Joint tolerance not is greater than zero. Defaulting to 1e-5.");
-    joint_tolerance = 1e-5;
-  }
-
-  // create the planner and set the output port to it
-  auto node = node_params_.nh.lock();
-  auto planner = std::make_shared<solvers::PipelinePlanner>(node);
-  planner->setProperty("goal_joint_tolerance", joint_tolerance);
-
-  setOutput(kPortPlanner, static_cast<moveit::task_constructor::solvers::PlannerInterfacePtr>(planner));
-  return BT::NodeStatus::SUCCESS;
-}
+enum PoseDimension { X=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::X,
+                     Y=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::Y,
+                     Z=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::Z,
+                     ROLL=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::ROLL,
+                     PITCH=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::PITCH,
+                     YAW=moveit::task_constructor::stages::GenerateRandomPose::PoseDimension::YAW};
 
 }  // namespace mtc_bt

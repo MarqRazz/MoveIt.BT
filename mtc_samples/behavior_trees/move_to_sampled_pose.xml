@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="move_to_sampled_pose">
+      <Sequence name="Pick Object">
+        <MTCCartesianPlanner planner="{cartesian_planner}"/>
+        <MTCPipelinePlanner planner="{pipeline_planner}"/>
+        <MTCInitializeTask task_name="pick object"
+                           task="{mtc_task}"/>
+        <MTCCurrentStateStage stage_name="current state"
+                              task="{mtc_task}"/>
+        <MTCMoveToStage stage_name="open hand"
+                        planner="{pipeline_planner}"
+                        group_name="right_gripper"
+                        goal_name="open"
+                        task="{mtc_task}"/>
+        <MTCConnectStage group_name="right_manipulator"
+                         mtc_planner="{pipeline_planner}"
+                         task="{mtc_task}"/>
+        <CreateVector3Stamped frame_id="right_arm_base_link"
+                              pose="0,0,-1"
+                              pose_stamped_msg = "{approach_grasp}"/>
+        <MTCMoveRelativeStage stage_name="approach object"
+                              planner="{cartesian_planner}"
+                              group_name="right_manipulator"
+                              ik_frame="right_arm_grasp_link"
+                              min_distance="0.02"
+                              max_distance="0.05"
+                              direction_vector="{approach_grasp}"
+                              task="{mtc_task}"/>
+        <CreatePoseStamped frame_id="right_arm_base_link"
+                           pose="0.5,0,0,3.14,0,0"
+                           pose_stamped_msg = "{grasp_pose}"/>
+        <MTCSampleGraspPose seed_pose="{grasp_pose}"
+                            pose_dimension="YAW"
+                            sampling_width="1.57"
+                            monitored_stage_name="open hand"
+                            task="{mtc_task}"/>
+        <MTCPlanTask task="{mtc_task}"
+                     max_solutions="1"/>
+        <MTCExecuteTask task="{mtc_task}"/>
+      </Sequence>
+  </BehaviorTree>
+</root>

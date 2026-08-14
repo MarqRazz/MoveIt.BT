@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Task">
+    <Sequence name="Pick and Move Home">
+      <Sequence name="Task 1">
+        <SubTree ID="Pick_Object" mtc_task="{task}"/>
+        <SubTree ID="Move Home"/>
+      </Sequence>
+    </Sequence>
+  </BehaviorTree>
+</root>

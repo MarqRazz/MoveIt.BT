@@ -1,0 +1,34 @@
+// Copyright 2024 Marq Rasmussen
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright
+// notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#include "behaviortree_ros2/plugins.hpp"
+// --- Behaviors to create moveit_msgs objects ----
+#include "moveit_msgs_bt/msg/create_collision_object.hpp"
+#include "moveit_msgs_bt/moveit_msgs_enums.hpp"
+
+
+
+namespace moveit_msgs_bt
+{
+// Plugin registration is required to be in the .cpp file.
+BT_REGISTER_ROS_NODES(factory, params)
+{
+  // Add MoveIt message based enums to the scripting language to allow setting them as port values
+  factory.registerScriptingEnums<CollisionShape>();
+  factory.registerScriptingEnums<CollisionOperation>();
+
+  // --- Behaviors to create moveit_msgs objects ----
+  factory.registerNodeType<CreateMoveItCollisionObject>("CreateMoveItCollisionObject");
+  
+}
+}  // namespace moveit_msgs_bt

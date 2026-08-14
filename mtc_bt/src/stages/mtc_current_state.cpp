@@ -11,7 +11,7 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_current_state.hpp"
+#include "mtc_bt/stages/mtc_current_state.hpp"
 
 namespace
 {
@@ -28,6 +28,10 @@ MTCCurrentStateStage::MTCCurrentStateStage(const std::string& name, const BT::No
 
 BT::NodeStatus MTCCurrentStateStage::tick()
 {
+  // these ports have defaults defined in .hpp file
+  std::string stage_name;
+  getInput<std::string>(kPortStageName, stage_name);
+
   // validate input ports
   TaskPtr task;
   if (!getInput<TaskPtr>(kPortTask, task))
@@ -37,7 +41,7 @@ BT::NodeStatus MTCCurrentStateStage::tick()
   }
 
   // create the stage and set the output port to it
-  auto current_state = std::make_unique<stages::CurrentState>("Current State");
+  auto current_state = std::make_unique<stages::CurrentState>(stage_name);
 
   // Verify that the start state is not in collision
   auto applicability_filter =

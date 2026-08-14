@@ -3,18 +3,18 @@
     default_planning_pipeline: ompl
     planning_pipelines:
       - ompl
-      - pilz_industrial_motion_planner
     ompl:
-      planning_plugin: ompl_interface/OMPLPlanner
-      start_state_max_bounds_error: 0.1
-      jiggle_fraction: 0.05
-      request_adapters: >-
-          default_planner_request_adapters/AddTimeOptimalParameterization
-          default_planner_request_adapters/ResolveConstraintFrames
-          default_planner_request_adapters/FixWorkspaceBounds
-          default_planner_request_adapters/FixStartStateBounds
-          default_planner_request_adapters/FixStartStateCollision
-          default_planner_request_adapters/FixStartStatePathConstraints
+      planning_plugins:
+        - ompl_interface/OMPLPlanner
+      request_adapters:
+        - default_planning_request_adapters/ResolveConstraintFrames
+        - default_planning_request_adapters/ValidateWorkspaceBounds
+        - default_planning_request_adapters/CheckStartStateBounds
+        - default_planning_request_adapters/CheckStartStateCollision
+      response_adapters:
+        - default_planning_response_adapters/AddTimeOptimalParameterization
+        - default_planning_response_adapters/ValidateSolution
+        - default_planning_response_adapters/DisplayMotionPath
     planner_configs:
       RRTkConfigDefault:
         type: geometric::RRT
@@ -92,13 +92,6 @@
           max_velocity: 0.1
           has_acceleration_limits: false
           max_acceleration: 0.0
-    pilz_industrial_motion_planner:
-      planning_plugin: pilz_industrial_motion_planner/CommandPlanner
-      request_adapters: ""
-      default_planner_config: PTP
-      capabilities: >-
-          pilz_industrial_motion_planner/MoveGroupSequenceAction
-          pilz_industrial_motion_planner/MoveGroupSequenceService
 
     trajectory_execution:
       allowed_execution_duration_scaling: 1.2

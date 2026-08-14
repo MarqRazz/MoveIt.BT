@@ -11,32 +11,39 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "behaviortree_cpp/action_node.h"
-#include "behaviortree_ros2/ros_node_params.hpp"
-#include <moveit/task_constructor/task.h>
-#include <rclcpp/node.hpp>
+#include "mtc_bt/solvers/mtc_pipeline_planner.hpp"
+
+namespace
+{
+static const auto kLogger = rclcpp::get_logger("MTCConnectStage");
+using namespace moveit::task_constructor;
+}  // namespace
 
 namespace mtc_bt
 {
-
-class MTCInitializeTask : public BT::SyncActionNode
+MTCPipelinePlanner::MTCPipelinePlanner(const std::string& name, const BT::NodeConfig& config,
+                                       const BT::RosNodeParams& params)
+  : SyncActionNode(name, config), node_params_(params)
 {
-public:
-  MTCInitializeTask(const std::string& name, const BT::NodeConfig& config, const BT::RosNodeParams& params);
+}
 
-  static BT::PortsList providedPorts()
+BT::NodeStatus MTCPipelinePlanner::tick()
+{
+  // validate the input port
+  double joint_tolerance;
+  if (!getInput<double>(kPortJointGoalTolerance, joint_tolerance) && joint_tolerance < 0.)
   {
-    return { BT::InputPort<std::string>(kPortTaskName), BT::OutputPort<moveit::task_constructor::TaskPtr>(kPortTask) };
+    RCLCPP_WARN(kLogger, "Joint tolerance not is greater than zero. Defaulting to 1e-5.");
+    joint_tolerance = 1e-5;
   }
 
-  BT::NodeStatus tick() override;
+  // create the planner and set the output port to it
+  auto node = node_params_.nh.lock();
+  auto planner = std::make_shared<solvers::PipelinePlanner>(node);
+  planner->setProperty("goal_joint_tolerance", joint_tolerance);
 
-private:
-  // Port name definitions
-  static constexpr auto kPortTaskName = "task_name";
-  static constexpr auto kPortTask = "task";
-
-  BT::RosNodeParams node_params_;
-};
+  setOutput(kPortPlanner, static_cast<moveit::task_constructor::solvers::PlannerInterfacePtr>(planner));
+  return BT::NodeStatus::SUCCESS;
+}
 
 }  // namespace mtc_bt

@@ -11,7 +11,7 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "mtc_bt/mtc_connect.hpp"
+#include "mtc_bt/stages/mtc_connect.hpp"
 
 namespace
 {
@@ -27,26 +27,19 @@ MTCConnectStage::MTCConnectStage(const std::string& name, const BT::NodeConfig& 
 
 BT::NodeStatus MTCConnectStage::tick()
 {
+  // these ports have defaults defined in .hpp file
+  std::string stage_name;
+  getInput<std::string>(kPortStageName, stage_name);
+  std::string group_name;
+  getInput<std::string>(kPortGroupName, group_name);
+  double timeout;
+  getInput<double>(kPortTimeout, timeout);
+
   // validate input ports
   TaskPtr task;
   if (!getInput<TaskPtr>(kPortTask, task))
   {
     throw BT::RuntimeError("missing required input [%s]", kPortTask);
-  }
-  std::string stage_name;
-  if (!getInput<std::string>(kPortStageName, stage_name))
-  {
-    throw BT::RuntimeError("missing required input [%s]", kPortStageName);
-  }
-  std::string group_name;
-  if (!getInput<std::string>(kPortGroupName, group_name))
-  {
-    throw BT::RuntimeError("missing required input [%s]", kPortGroupName);
-  }
-  double timeout;
-  if (!getInput<double>(kPortTimeout, timeout))
-  {
-    throw BT::RuntimeError("missing required input [%s]", kPortTimeout);
   }
   solvers::PlannerInterfacePtr mtc_planner;
   if (!getInput<solvers::PlannerInterfacePtr>(kPortMtcPlanner, mtc_planner))
@@ -58,7 +51,7 @@ BT::NodeStatus MTCConnectStage::tick()
   auto stage =
       std::make_unique<stages::Connect>(stage_name, stages::Connect::GroupPlannerVector{ { group_name, mtc_planner } });
   stage->setTimeout(timeout);
-  stage->properties().configureInitFrom(Stage::PARENT);
+  // stage->properties().configureInitFrom(Stage::PARENT);
   // stage->setPathConstraints(stage_constraint);
   task->add(std::move(stage));
 
