@@ -1,0 +1,184 @@
+{
+ "commit": "178c1cf",
+ "entries": {
+  "mtc_bt/CMakeLists.txt:28": {
+   "file": "mtc_bt/CMakeLists.txt",
+   "lines": {
+    "28": "add_library("
+   }
+  },
+  "mtc_bt/CMakeLists.txt:43": {
+   "file": "mtc_bt/CMakeLists.txt",
+   "lines": {
+    "43": "target_compile_definitions(mtc_plugin PRIVATE BT_PLUGIN_EXPORT)"
+   }
+  },
+  "mtc_bt/CMakeLists.txt:50-52": {
+   "file": "mtc_bt/CMakeLists.txt",
+   "lines": {
+    "50": "install(",
+    "52": "LIBRARY DESTINATION share/${PROJECT_NAME}/bt_plugins"
+   }
+  },
+  "mtc_bt/src/mtc_plugin.cpp:31-39": {
+   "file": "mtc_bt/src/mtc_plugin.cpp",
+   "lines": {
+    "31": "factory.registerNodeType<MTCInitializeTask>(\"MTCInitializeTask\", params);",
+    "39": "factory.registerNodeType<MTCMoveRelativeStage>(\"MTCMoveRelativeStage\");"
+   }
+  },
+  "mtc_cartesian_planner.cpp:36": {
+   "file": "mtc_bt/src/mtc_cartesian_planner.cpp",
+   "lines": {
+    "36": "if (!getInput<double>(kPortMaxVelScaling, max_vel_scale) && max_vel_scale <= 0.001 && max_vel_scale >= 1.0)"
+   }
+  },
+  "mtc_connect.cpp:34": {
+   "file": "mtc_bt/src/mtc_connect.cpp",
+   "lines": {
+    "34": "throw BT::RuntimeError(\"missing required input [%s]\", kPortTask);"
+   }
+  },
+  "mtc_connect.hpp:43": {
+   "file": "mtc_bt/include/mtc_bt/mtc_connect.hpp",
+   "lines": {
+    "43": "static constexpr auto kPortMtcPlanner = \"mtc_planner\";"
+   }
+  },
+  "mtc_current_state.cpp:44-45": {
+   "file": "mtc_bt/src/mtc_current_state.cpp",
+   "lines": {
+    "44": "std::make_unique<stages::PredicateFilter>(\"Start State collision check\", std::move(current_state));",
+    "45": "applicability_filter->setPredicate([](const SolutionBase& s, std::string& comment) {"
+   }
+  },
+  "mtc_execute_task.cpp:72": {
+   "file": "mtc_bt/src/mtc_execute_task.cpp",
+   "lines": {
+    "72": "auto moveit_error_code = task_->execute(*task_->solutions().front());"
+   }
+  },
+  "mtc_init_task.cpp:46": {
+   "file": "mtc_bt/src/mtc_init_task.cpp",
+   "lines": {
+    "46": "task->loadRobotModel(node);"
+   }
+  },
+  "mtc_init_task.cpp:47": {
+   "file": "mtc_bt/src/mtc_init_task.cpp",
+   "lines": {
+    "47": "std::vector<std::string> controllers = { \"panda_arm_controller\", \"panda_hand_controller\" };"
+   }
+  },
+  "mtc_move_relative.cpp:75-77": {
+   "file": "mtc_bt/src/mtc_move_relative.cpp",
+   "lines": {
+    "75": "vec.header.frame_id = direction_frame_id;",
+    "77": "stage->setDirection(vec);"
+   }
+  },
+  "mtc_move_relative.cpp:78": {
+   "file": "mtc_bt/src/mtc_move_relative.cpp",
+   "lines": {
+    "78": "std::vector<std::string> controllers = { \"panda_arm_controller\", \"panda_hand_controller\" };"
+   }
+  },
+  "mtc_move_relative.cpp:80": {
+   "file": "mtc_bt/src/mtc_move_relative.cpp",
+   "lines": {
+    "80": "task->insert(std::move(stage));"
+   }
+  },
+  "mtc_move_relative.hpp:38": {
+   "file": "mtc_bt/include/mtc_bt/mtc_move_relative.hpp",
+   "lines": {
+    "38": "BT::InputPort<geometry_msgs::msg::Vector3Stamped>(kPortDirectionVector),"
+   }
+  },
+  "mtc_move_to.cpp:67": {
+   "file": "mtc_bt/src/mtc_move_to.cpp",
+   "lines": {
+    "67": "std::vector<std::string> controllers = { \"panda_arm_controller\", \"panda_hand_controller\" };"
+   }
+  },
+  "mtc_move_to.hpp:43": {
+   "file": "mtc_bt/include/mtc_bt/mtc_move_to.hpp",
+   "lines": {
+    "43": "static constexpr auto kPortMtcPlanner = \"planner\";"
+   }
+  },
+  "mtc_plan_task.cpp:50": {
+   "file": "mtc_bt/src/mtc_plan_task.cpp",
+   "lines": {
+    "50": "planning_status_ = BT::NodeStatus::RUNNING;"
+   }
+  },
+  "mtc_plan_task.cpp:53": {
+   "file": "mtc_bt/src/mtc_plan_task.cpp",
+   "lines": {
+    "53": "thread_ = std::thread{ [=]() { planTask(); } };"
+   }
+  },
+  "mtc_plan_task.cpp:65": {
+   "file": "mtc_bt/src/mtc_plan_task.cpp",
+   "lines": {
+    "65": "task_->preempt();"
+   }
+  },
+  "mtc_plan_task.hpp:38": {
+   "file": "mtc_bt/include/mtc_bt/mtc_plan_task.hpp",
+   "lines": {
+    "38": "std::cout << \"~MTCPlanTask****************************\" << std::endl;"
+   }
+  },
+  "mtc_plugin.cpp:29": {
+   "file": "mtc_bt/src/mtc_plugin.cpp",
+   "lines": {
+    "29": "BT_REGISTER_ROS_NODES(factory, params)"
+   }
+  },
+  "mtc_plugin.cpp:31-32": {
+   "file": "mtc_bt/src/mtc_plugin.cpp",
+   "lines": {
+    "31": "factory.registerNodeType<MTCInitializeTask>(\"MTCInitializeTask\", params);",
+    "32": "factory.registerNodeType<MTCPipelinePlanner>(\"MTCPipelinePlanner\", params);"
+   }
+  },
+  "mtc_plugin.cpp:32": {
+   "file": "mtc_bt/src/mtc_plugin.cpp",
+   "lines": {
+    "32": "factory.registerNodeType<MTCPipelinePlanner>(\"MTCPipelinePlanner\", params);"
+   }
+  },
+  "mtc_plugin.cpp:33": {
+   "file": "mtc_bt/src/mtc_plugin.cpp",
+   "lines": {
+    "33": "factory.registerNodeType<MTCCartesianPlanner>(\"MTCCartesianPlanner\");"
+   }
+  },
+  "mtc_samples/config/sample_mtc_executor.yaml:5": {
+   "file": "mtc_samples/config/sample_mtc_executor.yaml",
+   "lines": {
+    "5": "groot2_port: 1667 # Optional (defaults to 1667)"
+   }
+  },
+  "mtc_samples/config/sample_mtc_executor.yaml:8": {
+   "file": "mtc_samples/config/sample_mtc_executor.yaml",
+   "lines": {
+    "8": "plugins:"
+   }
+  },
+  "sample_mtc_executor.yaml:13": {
+   "file": "mtc_samples/config/sample_mtc_executor.yaml",
+   "lines": {
+    "13": "behavior_trees:"
+   }
+  },
+  "sample_mtc_executor.yaml:3": {
+   "file": "mtc_samples/config/sample_mtc_executor.yaml",
+   "lines": {
+    "3": "action_name: \"behavior_server\" # Optional (defaults to `bt_action_server`)"
+   }
+  }
+ }
+}
